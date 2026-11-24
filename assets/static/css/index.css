@@ -1,0 +1,267 @@
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Noto Sans', sans-serif;
+}
+
+
+.footer .icon-link {
+    font-size: 25px;
+    color: #000;
+}
+
+.link-block a {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.dnerf {
+  font-variant: small-caps;
+}
+
+.hero-main .hero-body {
+  padding-bottom: 0rem;
+}
+
+.publication-title {
+  font-family: 'Google Sans', sans-serif;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.publication-authors {
+    font-family: 'Google Sans', sans-serif;
+}
+
+.publication-venue {
+    color: #555;
+    width: fit-content;
+    font-weight: bold;
+}
+
+.publication-awards {
+    color: #ff3860;
+    width: fit-content;
+    font-weight: bolder;
+}
+
+.publication-authors a {
+   color: hsl(204, 86%, 53%) !important;
+}
+
+.publication-authors a:hover {
+    text-decoration: underline;
+}
+
+.author-block {
+  display: inline-block;
+}
+
+.eql-cntrb {
+  font-size: smaller;
+}
+
+
+h1 {
+  font-size: 2rem;
+}
+
+h2 {
+  font-size: 1.5rem;
+  padding-left: 20px;
+}
+
+h3 {
+  font-size: 1.2rem;
+  padding-left: 40px;
+}
+
+h4 {
+  font-size: 1rem;
+  font-style: italic;
+  padding-left: 60px;
+}
+
+.image-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.image-container img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Bulma 默认给紧跟在 title 后的 subtitle 加了负的上边距，会导致与标题贴得过近 */
+.title:not(.is-spaced) + .subtitle {
+  margin-top: 0.85rem !important;
+}
+
+/* 区块副标题：限制宽度并居中，行高放宽 */
+.gallery-subtitle {
+  max-width: 52rem;
+  margin-left: auto;
+  margin-right: auto;
+  line-height: 1.6;
+}
+
+/* 论文图片与题注 */
+.content img {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin: 0 auto 0.9rem;
+}
+
+.figure-caption {
+  font-size: 0.82rem;
+  line-height: 1.6;
+  color: #6b6b6b;
+  text-align: justify;
+}
+
+/* 渲染 LaTeX \mathcal 花体字（用于公式符号 T）。
+   内嵌 STIX Two Math 的花体 T 子集，并将字形映射到普通 'T'，
+   因此任何机器上都显示为花体且绝不会出现缺字方块。 */
+@font-face {
+  font-family: "MathcalT";
+  src: url(data:font/otf;base64,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) format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: block;
+}
+
+i.mathcal {
+  font-family: "MathcalT", "STIX Two Math", "Cambria Math", "Times New Roman", serif;
+  font-style: normal;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+}
+
+/* 将 is-light 背景改为白色 */
+.hero.is-light {
+  background-color: #fff !important;
+}
+
+.hero.is-light .hero-body {
+  background-color: #fff !important;
+}
+
+/* ===== 情感轴 Demo 网格 ===== */
+.axis-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.6rem;
+  margin-top: 1.6rem;
+}
+
+@media (max-width: 768px) {
+  .axis-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.axis-card {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #e6e6e6;
+  border-radius: 10px;
+  overflow: hidden;
+  background-color: #fff;
+  box-shadow: 0 1px 3px rgba(10, 10, 10, 0.06);
+  transition: box-shadow 0.25s ease, transform 0.25s ease;
+}
+
+.axis-card:hover {
+  box-shadow: 0 6px 18px rgba(10, 10, 10, 0.10);
+  transform: translateY(-2px);
+}
+
+.axis-card video {
+  display: block;
+  width: 100%;
+  height: auto;
+  background-color: #000;
+  aspect-ratio: 16 / 9;
+}
+
+/* 视频缺失时的占位提示（视频加载成功后自动隐藏） */
+.axis-placeholder {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.15rem;
+  padding: 1.1rem;
+  background-color: #fafafa;
+  border-bottom: 1px dashed #d8d8d8;
+  color: #8a8a8a;
+  font-size: 0.78rem;
+  text-align: center;
+}
+
+.axis-card.video-missing .axis-placeholder {
+  display: flex;
+}
+
+.axis-card.video-missing video {
+  display: none;
+}
+
+.axis-placeholder-icon {
+  font-size: 1.35rem;
+  color: #c4c4c4;
+}
+
+.axis-placeholder-name {
+  font-family: monospace;
+  color: #5a5a5a;
+}
+
+.axis-placeholder-hint code {
+  background-color: #eee;
+  padding: 0 0.25em;
+  border-radius: 3px;
+  font-size: 0.95em;
+}
+
+.axis-body {
+  padding: 0.9rem 1.1rem 1.1rem;
+  flex: 1 1 auto;
+}
+
+/* 情感标签（六条轴各配色） */
+.axis-chip {
+  display: inline-block;
+  padding: 0.12rem 0.7rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  color: #fff;
+  margin-bottom: 0.5rem;
+}
+
+.axis-disgust { background-color: #7b5ea7; }
+.axis-joy     { background-color: #e8a33d; }
+.axis-fear    { background-color: #4a7fb5; }
+.axis-sadness { background-color: #5c7a99; }
+.axis-anger   { background-color: #c0483c; }
+.axis-neutral { background-color: #7a7a7a; }
+
+.axis-quote {
+  font-size: 0.9rem;
+  font-style: italic;
+  color: #333;
+  line-height: 1.5;
+  margin-bottom: 0.45rem;
+}
+
+.axis-desc {
+  font-size: 0.82rem;
+  color: #6b6b6b;
+  line-height: 1.55;
+  margin-bottom: 0;
+}
