@@ -1,387 +1,262 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="utf-8">
-  <!-- Meta tags for social media banners -->
-  <meta name="description" content="Script-to-Acting: generating controllable, emotion-aligned acting directly from raw theatre scripts via content-variant control. We introduce the TheaterAct dataset and the Acting Mind / Acting Morph / Acting Creation framework.">
-  <meta property="og:title" content="Bring Scripts to Acting! Content-Variant Control for Emotion-Aligned Acting Generation"/>
-  <meta property="og:description" content="A unified framework that turns raw theatre scripts into expressive, physically plausible, emotion-aligned acting, with continuous and content-variant dramatic-intensity control."/>
-  <meta property="og:url" content="https://xiongsifan02-xsf.github.io/bring-scripts-to-acting/"/>
-  <!-- Path to banner image, should be in the path listed below. Optimal dimensions are 1200X630 -->
-  <meta property="og:image" content="assets/pic/0_shoutu.jpg" />
-  <!-- <meta property="og:image:width" content="1200"/>
-  <meta property="og:image:height" content="630"/> -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bring Scripts to Acting! Content-Variant Control for Emotion-Aligned Acting Generation</title>
+<meta name="description" content="Same line, different emotion, different acting. Script-to-Acting turns a raw script into emotion-aligned acting where intensity changes what the performer does, not just how big the motion is.">
+<meta property="og:image" content="assets/pic/0_shoutu.jpg">
+<style>
+  :root{
+    --bg:#ffffff; --text:#1f2328; --muted:#6b7280; --line:#e5e7eb; --accent:#2563eb; --soft:#f6f8fa;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0; background:var(--bg); color:var(--text);
+    font:17px/1.65 -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Helvetica Neue",Arial,sans-serif;
+  }
+  a{color:var(--accent); text-decoration:none}
+  a:hover{text-decoration:underline}
+  .wrap{max-width:860px; margin:0 auto; padding:0 20px}
+  section{padding:36px 0}
+  h1{font-size:34px; line-height:1.2; margin:0 0 14px; letter-spacing:-.02em}
+  h2{font-size:22px; margin:0 0 14px; letter-spacing:-.01em}
+  .center{text-align:center}
+  .muted{color:var(--muted)}
 
-  <meta name="twitter:title" content="Bring Scripts to Acting!">
-  <meta name="twitter:description" content="Content-variant control for emotion-aligned acting generation.">
-  <meta name="twitter:image" content="assets/pic/0_shoutu.jpg">
-  <meta name="twitter:card" content="summary_large_image">
-  <!-- Keywords for your paper to be indexed by-->
-  <meta name="keywords" content="Script-to-Acting, TheaterAct, Acting Generation, Text-to-Motion, Emotion-Aligned Motion, Content-Variant Control, Motion Stylization">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  /* header */
+  header{padding:56px 0 24px}
+  .authors{font-size:17px; margin:6px 0}
+  .authors sup{font-size:.7em}
+  .affil{font-size:14px; color:var(--muted); line-height:1.6}
+  .emails{font-size:12.5px; color:var(--muted); margin-top:6px; font-family:ui-monospace,Menlo,monospace}
+  .btns{margin-top:20px; display:flex; gap:10px; justify-content:center; flex-wrap:wrap}
+  .btn{
+    display:inline-block; padding:8px 18px; border-radius:999px; font-size:15px;
+    border:1px solid var(--line); background:#fff; color:var(--text);
+  }
+  .btn:hover{background:var(--soft); text-decoration:none}
+  .btn.primary{background:var(--text); color:#fff; border-color:var(--text)}
+  .btn.primary:hover{opacity:.9}
 
+  /* hook */
+  .hook{
+    background:var(--soft); border-radius:14px; padding:26px 28px; margin-top:8px;
+  }
+  .hook .big{font-size:22px; font-weight:650; line-height:1.35; margin:0 0 10px}
+  .hook p{margin:6px 0}
+  .points{margin:16px 0 0; padding:0; list-style:none; display:grid; gap:10px}
+  .points li{padding-left:22px; position:relative; line-height:1.6}
+  .points li::before{content:"•"; position:absolute; left:6px; color:var(--accent); font-weight:700}
 
-  <title>Bring Scripts to Acting! Content-Variant Control for Emotion-Aligned Acting Generation</title>
-  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
-     rel="stylesheet">
+  /* media */
+  video,img{max-width:100%; border-radius:10px; display:block}
+  .video-main{width:100%; background:#000; aspect-ratio:16/9}
+  figure{margin:0}
+  figcaption{font-size:14px; color:var(--muted); margin-top:8px}
 
-  <link rel="stylesheet" href="assets/static/css/bulma.min.css">
-  <link rel="stylesheet" href="assets/static/css/bulma-carousel.min.css">
-  <link rel="stylesheet" href="assets/static/css/bulma-slider.min.css">
-  <link rel="stylesheet" href="assets/static/css/fontawesome.all.min.css">
-  <link rel="stylesheet"
-  href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
-  <link rel="stylesheet" href="assets/static/css/index.css">
+  /* six emotion axes (original card style) */
+  .axis-grid{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:1.6rem; margin-top:1.4rem}
+  .axis-card{
+    display:flex; flex-direction:column; border:1px solid #e6e6e6; border-radius:10px; overflow:hidden;
+    background:#fff; box-shadow:0 1px 3px rgba(10,10,10,.06);
+  }
+  .axis-card video{width:100%;aspect-ratio:16/9;background:#000;display:block}
+  .axis-body{padding:.9rem 1.1rem 1.1rem}
+  .axis-chip{
+    display:inline-block; padding:.12rem .7rem; border-radius:999px; font-size:.78rem; font-weight:700;
+    letter-spacing:.03em; color:#fff; margin-bottom:.5rem;
+  }
+  .axis-disgust{background:#7b5ea7} .axis-joy{background:#e8a33d} .axis-fear{background:#4a7fb5}
+  .axis-sadness{background:#5c7a99} .axis-anger{background:#c0483c} .axis-neutral{background:#7a7a7a}
+  .axis-quote{font-size:.9rem; font-style:italic; color:#333; line-height:1.5; margin:0 0 .45rem}
+  .axis-desc{font-size:.82rem; color:#6b6b6b; line-height:1.55; margin:0}
+  @media (max-width:720px){ h1{font-size:26px} .axis-grid{grid-template-columns:minmax(0,1fr)} }
 
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-  <script defer src="assets/static/js/fontawesome.all.min.js"></script>
-  <script src="assets/static/js/bulma-carousel.min.js"></script>
-  <script src="assets/static/js/bulma-slider.min.js"></script>
+  .ph{
+    width:100%; aspect-ratio:16/9; border-radius:10px; background:#111827; color:#9ca3af;
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px;
+    font-size:14px; text-align:center;
+  }
+  .ph .play{
+    width:44px; height:44px; border-radius:50%; border:2px solid #9ca3af; position:relative;
+  }
+  .ph .play::after{
+    content:""; position:absolute; left:17px; top:11px;
+    border-left:14px solid #9ca3af; border-top:9px solid transparent; border-bottom:9px solid transparent;
+  }
+  details{margin-top:8px} details summary{cursor:pointer}
+  pre{
+    background:var(--soft); border-radius:10px; padding:14px 16px; overflow:auto;
+    font:13px/1.55 ui-monospace,Menlo,monospace; margin:0;
+  }
+  footer{padding:28px 0 56px; font-size:13px; color:var(--muted)}
+</style>
 </head>
-
 <body>
-<section class="hero hero-main">
-  <div class="hero-body">
-    <div class="container is-max-widescreen">
-      <div class="columns is-centered">
-        <div class="container has-text-centered">
-          <h1 class="title is-2 publication-title">
-            Bring Scripts to Acting! Content-Variant Control for Emotion-Aligned Acting Generation
-          </h1>
-          <div class="is-size-5 publication-authors">
-            <span class="author-block">Mengtian Li<sup>1,2</sup>,</span>
-            <span class="author-block">Sifan Xiong<sup>1</sup>,</span>
-            <span class="author-block">Botao Qin<sup>1</sup>,</span>
-            <span class="author-block">Yichen Pan<sup>1</sup>,</span>
-            <span class="author-block">Li Jin<sup>3</sup>,</span>
-            <span class="author-block">Yanran Li<sup>4</sup></span>
-          </div>
 
-          <div class="is-size-6 publication-authors">
-            <span class="author-block"><sup>1</sup>Shanghai Film Academy, Shanghai University</span><br>
-            <span class="author-block"><sup>2</sup>Shanghai Innovation Institute</span><br>
-            <span class="author-block"><sup>3</sup>Shanghai Jiao Tong University</span><br>
-            <span class="author-block"><sup>4</sup>University of Bedfordshire</span>
-          </div>
+<header>
+  <div class="wrap center">
+    <h1>Bring Scripts to Acting!<br><span style="font-weight:500">Content-Variant Control for Emotion-Aligned Acting Generation</span></h1>
 
-          <div class="is-size-7 publication-authors" style="margin-top:0.35rem;">
-            <span class="author-block"><tt>mtli@shu.edu.cn</tt>,</span>
-            <span class="author-block"><tt>15284793143@shu.edu.cn</tt>,</span>
-            <span class="author-block"><tt>botow0102@gmail.com</tt>,</span>
-            <span class="author-block"><tt>pany7066@gmail.com</tt>,</span>
-            <span class="author-block"><tt>li.jin@sjtu.edu.cn</tt>,</span>
-            <span class="author-block"><tt>buliyanran@gmail.com</tt></span>
-          </div>
+    <div class="authors">
+      Mengtian Li<sup>1,2</sup> &nbsp; Sifan Xiong<sup>1</sup> &nbsp; Botao Qin<sup>1</sup> &nbsp;
+      Yichen Pan<sup>1</sup> &nbsp; Li Jin<sup>3</sup> &nbsp; Yanran Li<sup>4</sup>
+    </div>
+    <div class="affil">
+      <sup>1</sup>Shanghai Film Academy, Shanghai University &nbsp;·&nbsp;
+      <sup>2</sup>Shanghai Innovation Institute<br>
+      <sup>3</sup>Shanghai Jiao Tong University &nbsp;·&nbsp;
+      <sup>4</sup>University of Bedfordshire
+    </div>
+    <div class="emails">
+      mtli@shu.edu.cn · 15284793143@shu.edu.cn · botow0102@gmail.com<br>
+      pany7066@gmail.com · li.jin@sjtu.edu.cn · buliyanran@gmail.com
+    </div>
 
-          <div class="column has-text-centered">
-            <div class="publication-links">
-              <!-- Paper PDF link -->
-              <span class="link-block">
-                <a href="paper.pdf" target="_blank"
-                class="external-link button is-normal is-rounded is-light">
-                  <span class="icon">
-                    <i class="fas fa-file-pdf"></i>
-                  </span>
-                  <span>Paper</span>
-                </a>
-              </span>
-
-              <!-- Code / repo link -->
-              <span class="link-block">
-                <a href="https://github.com/xiongsifan02-xsf/bring-scripts-to-acting" target="_blank"
-                class="external-link button is-normal is-rounded is-light">
-                  <span class="icon">
-                    <i class="fab fa-github"></i>
-                  </span>
-                  <span>Code</span>
-                </a>
-              </span>
-            </div>
-          </div>
-        </div>
-      </div>
+    <div class="btns">
+      <a class="btn primary" href="paper.pdf" target="_blank">Paper</a>
+      <a class="btn" href="#video">Video</a>
+      <a class="btn" href="https://github.com/xiongsifan02-xsf/bring-scripts-to-acting" target="_blank">Code</a>
     </div>
   </div>
-</section>
+</header>
 
+<main class="wrap">
 
-<!-- Video Presentation -->
-<section class="hero is-small">
-  <div class="hero-body">
-    <div class="item has-text-centered">
-      <div class="has-text-centered">
-        <h2 class="title is-3">Video Presentation</h2>
-        <video width="760" height="360" controls>
-          <source src="demo.mp4" type="video/mp4">
+  <!-- 1. Demo 视频（回到原来的位置：作者下方第一块） -->
+  <section id="video" style="padding-top:8px">
+    <h2>Video Presentation</h2>
+    <video class="video-main" controls preload="metadata" poster="assets/pic/0_shoutu.jpg">
+      <source src="demo.mp4" type="video/mp4">
+    </video>
+  </section>
+
+  <!-- 2. 一眼看懂：做了什么 + 为什么 + 三个贡献 -->
+  <section>
+    <div class="hook">
+      <p class="big">Same line. Different emotion. Different acting.</p>
+      <p>
+        <b>What we did.</b> We turn a raw theatre script into acting, and let emotion intensity change
+        <i>what the performer does</i>, not just how big the motion is.
+      </p>
+      <p>
+        <b>Why.</b> Text-to-motion and motion-stylization methods keep the motion content fixed and only rescale style
+        or intensity. Real acting does not work that way: as anger grows, a submissive plea can become a waving
+        reprimand, then a shove-away.
+      </p>
+      <p>
+        <b>Generalization.</b> We validate the method on both diffusion (MDM, MLD) and masked-token (MoMask, MMM)
+        motion generators, and it improves all four without changing their architectures. With new datasets, the same
+        recipe can extend to more plays and emotion axes, so we expect it to generalize well beyond TheaterAct.
+      </p>
+    </div>
+  </section>
+
+  <section>
+    <h2>Contributions</h2>
+    <ul class="points">
+      <li>We formulate <b>Script-to-Acting</b>, a framework that turns scripts directly into expressive, physically plausible, contextually aligned acting, with continuous control over dramatic intensity instead of discrete emotion labels. The modules can be integrated into existing motion-generation models to enhance emotion-aligned generation and fine-grained control.</li>
+      <li>We identify <b>content-variant</b> control as the key capability that distinguishes acting from styled motion: as emotional intensity increases, the acting mode can change rather than remaining fixed. We realize this through <b>Acting Morph</b>, which replaces a global style code with a <b>token-wise</b> acting-mode matrix that binds motif coordinates to script tokens, so intensity traverses distinct acting motifs rather than rescaling a fixed action.</li>
+      <li>We release <b>TheaterAct</b>, the first multimodal dataset centered on script&ndash;dialogue&ndash;acting alignment and fine-grained dramatic emotions, with script-level context and rich annotations. It enables supervised training and evaluation of script-conditioned, emotion-aligned acting, and supports continuous intensity control along multiple emotion axes, providing a benchmark substrate for future work on expressive acting generation.</li>
+    </ul>
+  </section>
+
+  <!-- 3. 一张图 -->
+  <section>
+    <h2>Teaser</h2>
+    <figure>
+      <img src="assets/pic/0_shoutu.jpg" alt="Script-to-Acting teaser">
+      <figcaption>
+        <b>Figure 1.</b> Prior work follows a caption or restyles an existing clip. Script-to-Acting takes a script, a
+        character and a line, and the intensity changes both how strong the performance is and which motion it is.
+      </figcaption>
+    </figure>
+  </section>
+
+  <!-- 4. 六个情绪片段 -->
+  <section>
+    <h2>Acting across Emotion Axes</h2>
+    <p class="muted" style="margin-top:-6px">On the same character (Hamlet), each line is played along one of the six emotion axes. As the intensity is swept, the performance traverses distinct acting motifs rather than rescaling a single gesture.</p>
+    <div class="axis-grid">
+      <div class="axis-card">
+        <video controls preload="metadata">
+          <source src="assets/Video/Anger.mp4" type="video/mp4">
         </video>
-      </div>
-    </div>
-  </div>
-</section>
-
-
-<!-- Teaser -->
-<section class="hero is-small">
-  <div class="hero-body">
-    <div class="container is-max-desktop">
-      <div class="columns is-centered has-text-centered">
-        <div class="column is-four-fifths">
-          <h2 class="title is-3">Teaser</h2>
-          <div class="content has-text-justified">
-            <img src="assets/pic/0_shoutu.jpg" alt="Script-to-Acting teaser"/>
-            <p class="figure-caption">
-              <b>Figure 1.</b> Motion generation and motion stylization either follow a caption or restyle
-              an existing clip, whereas Script-to-Acting, given a script, a character, and a line, generates
-              content-variant acting on a pretrained backbone. Emotion and control are enabled as a drop-in
-              alignment signal, so both the strength and the motion identity of the performance change.
-            </p>
-          </div>
+        <div class="axis-body">
+          <span class="axis-chip axis-anger">Anger</span>
+          <p class="axis-quote">&ldquo;Frailty, thy name is woman!&rdquo;</p>
+          <p class="axis-desc">Hamlet speaks with broad overlapped hands, waves, points forward, slashes and waves frantically in anger.</p>
         </div>
       </div>
-    </div>
-  </div>
-</section>
-<!-- End teaser -->
-
-
-<!-- Method -->
-<section class="hero is-small is-light">
-  <div class="hero-body">
-    <div class="container is-max-desktop">
-      <div class="columns is-centered has-text-centered">
-        <div class="column is-four-fifths">
-          <h2 class="title is-3">Method</h2>
-          <div class="content has-text-justified">
-            <img src="assets/pic/pipline.jpg" alt="Script-to-Acting pipeline"/>
-            <p class="figure-caption">
-              <b>Figure 2.</b> <b>Script-to-Acting.</b> Given a script, a character, a line, and an
-              intensity &tau; along the active emotion axis <i>e</i><sup>&#8902;</sup>, Acting Mind produces
-              an acting plan <i class="mathcal">T</i>. Acting Morph scores each script token against
-              same-axis professional clips from TheaterAct, binding them into a token-wise acting-mode
-              matrix <i>S</i> and encoding the selected columns as priors <i>H</i><sub>ref</sub>. Acting
-              Creation then synthesizes motion conditioned on <i class="mathcal">T</i> and
-              <i>H</i><sub>ref</sub>, yielding a content-variant family as &tau; is swept.
-            </p>
-          </div>
+      <div class="axis-card">
+        <video controls preload="metadata">
+          <source src="assets/Video/Fear.mp4" type="video/mp4">
+        </video>
+        <div class="axis-body">
+          <span class="axis-chip axis-fear">Fear</span>
+          <p class="axis-quote">&ldquo;The undiscovered country from whose bourn no traveller returns, puzzles the will.&rdquo;</p>
+          <p class="axis-desc">Hamlet steps and probes, crouches guarded, retreats head-hugging, and squats clutching his head in fear.</p>
         </div>
       </div>
-    </div>
-  </div>
-</section>
-<!-- End method -->
-
-
-<!-- Emotion Axis Demo -->
-<section class="hero is-small">
-  <div class="hero-body">
-    <div class="container is-max-desktop">
-      <div class="has-text-centered">
-        <h2 class="title is-3">Acting across Emotion Axes</h2>
-        <p class="subtitle is-6 has-text-grey gallery-subtitle">
-          On the same character (Hamlet), each line is played along one of the six emotion axes
-          <i>A</i> = {Anger, Disgust, Fear, Joy, Sadness, Neutral}. As the intensity is swept, the
-          performance traverses distinct acting motifs rather than rescaling a single gesture.
-        </p>
+      <div class="axis-card">
+        <video controls preload="metadata">
+          <source src="assets/Video/Disgust.mp4" type="video/mp4">
+        </video>
+        <div class="axis-body">
+          <span class="axis-chip axis-disgust">Disgust</span>
+          <p class="axis-quote">&ldquo;Heaven make thee free of it! I do beseech you.&rdquo;</p>
+          <p class="axis-desc">Hamlet kneels in prayer, rebukes, shoves and turns, charges and shakes shoulders in disgust.</p>
+        </div>
       </div>
-
-      <div class="axis-grid">
-
-        <!-- Anger -->
-        <div class="axis-card">
-          <video controls preload="metadata">
-            <source src="./assets/Video/Anger.mp4" type="video/mp4">
-          </video>
-          <div class="axis-placeholder">
-            <span class="axis-placeholder-icon"><i class="fas fa-film"></i></span>
-            <span class="axis-placeholder-name">Anger.mp4</span>
-            <span class="axis-placeholder-hint">Drop the video into <code>assets/Video/</code></span>
-          </div>
-          <div class="axis-body">
-            <span class="axis-chip axis-anger">Anger</span>
-            <p class="axis-quote">&ldquo;Frailty, thy name is woman!&rdquo;</p>
-            <p class="axis-desc">
-              Hamlet speaks with broad overlapped hands, waves, points forward, slashes and waves frantically
-              in anger.
-            </p>
-          </div>
+      <div class="axis-card">
+        <video controls preload="metadata">
+          <source src="assets/Video/Sadness.mp4" type="video/mp4">
+        </video>
+        <div class="axis-body">
+          <span class="axis-chip axis-sadness">Sadness</span>
+          <p class="axis-quote">&ldquo;How weary, stale, flat, and unprofitable seem to me all the uses of this world!&rdquo;</p>
+          <p class="axis-desc">Hamlet walks upright, trudges hunched, clasps and bows, then sits hiding his face on knees in sadness.</p>
         </div>
-
-        <!-- Fear -->
-        <div class="axis-card">
-          <video controls preload="metadata">
-            <source src="./assets/Video/Fear.mp4" type="video/mp4">
-          </video>
-          <div class="axis-placeholder">
-            <span class="axis-placeholder-icon"><i class="fas fa-film"></i></span>
-            <span class="axis-placeholder-name">Fear.mp4</span>
-            <span class="axis-placeholder-hint">Drop the video into <code>assets/Video/</code></span>
-          </div>
-          <div class="axis-body">
-            <span class="axis-chip axis-fear">Fear</span>
-            <p class="axis-quote">
-              &ldquo;The undiscovered country from whose bourn no traveller returns, puzzles the will.&rdquo;
-            </p>
-            <p class="axis-desc">
-              Hamlet steps and probes, crouches guarded, retreats head-hugging, and squats clutching his head
-              in fear.
-            </p>
-          </div>
-        </div>
-
-        <!-- Disgust -->
-        <div class="axis-card">
-          <video controls preload="metadata">
-            <source src="./assets/Video/Disgust.mp4" type="video/mp4">
-          </video>
-          <div class="axis-placeholder">
-            <span class="axis-placeholder-icon"><i class="fas fa-film"></i></span>
-            <span class="axis-placeholder-name">Disgust.mp4</span>
-            <span class="axis-placeholder-hint">Drop the video into <code>assets/Video/</code></span>
-          </div>
-          <div class="axis-body">
-            <span class="axis-chip axis-disgust">Disgust</span>
-            <p class="axis-quote">&ldquo;Heaven make thee free of it! I do beseech you.&rdquo;</p>
-            <p class="axis-desc">
-              Hamlet kneels in prayer, rebukes, shoves and turns, charges and shakes shoulders in disgust.
-            </p>
-          </div>
-        </div>
-
-        <!-- Sadness -->
-        <div class="axis-card">
-          <video controls preload="metadata">
-            <source src="./assets/Video/Sadness.mp4" type="video/mp4">
-          </video>
-          <div class="axis-placeholder">
-            <span class="axis-placeholder-icon"><i class="fas fa-film"></i></span>
-            <span class="axis-placeholder-name">Sadness.mp4</span>
-            <span class="axis-placeholder-hint">Drop the video into <code>assets/Video/</code></span>
-          </div>
-          <div class="axis-body">
-            <span class="axis-chip axis-sadness">Sadness</span>
-            <p class="axis-quote">
-              &ldquo;How weary, stale, flat, and unprofitable seem to me all the uses of this world!&rdquo;
-            </p>
-            <p class="axis-desc">
-              Hamlet walks upright, trudges hunched, clasps and bows, then sits hiding his face on knees in
-              sadness.
-            </p>
-          </div>
-        </div>
-
-        <!-- Joy -->
-        <div class="axis-card">
-          <video controls preload="metadata">
-            <source src="./assets/Video/Joy.mp4" type="video/mp4">
-          </video>
-          <div class="axis-placeholder">
-            <span class="axis-placeholder-icon"><i class="fas fa-film"></i></span>
-            <span class="axis-placeholder-name">Joy.mp4</span>
-            <span class="axis-placeholder-hint">Drop the video into <code>assets/Video/</code></span>
-          </div>
-          <div class="axis-body">
-            <span class="axis-chip axis-joy">Joy</span>
-            <p class="axis-quote">&ldquo;Horatio, a fellow of infinite jest, of most excellent fancy.&rdquo;</p>
-            <p class="axis-desc">
-              Hamlet raises an arm, poses to orate, cheers aloud, and runs in circles across the stage in joy.
-            </p>
-          </div>
-        </div>
-
-        <!-- Neutral -->
-        <div class="axis-card">
-          <video controls preload="metadata">
-            <source src="./assets/Video/Neutral.mp4" type="video/mp4">
-          </video>
-          <div class="axis-placeholder">
-            <span class="axis-placeholder-icon"><i class="fas fa-film"></i></span>
-            <span class="axis-placeholder-name">Neutral.mp4</span>
-            <span class="axis-placeholder-hint">Drop the video into <code>assets/Video/</code></span>
-          </div>
-          <div class="axis-body">
-            <span class="axis-chip axis-neutral">Neutral</span>
-            <p class="axis-quote">&ldquo;To be, or not to be: that is the question.&rdquo;</p>
-            <p class="axis-desc">
-              Hamlet kneels open-armed, scans viewers, speaks boldly, and runs stretched with tilted head in
-              neutrality.
-            </p>
-          </div>
-        </div>
-
       </div>
-    </div>
-  </div>
-</section>
-<!-- End emotion axis demo -->
-
-
-<!-- Conclusion -->
-<section class="hero is-small">
-  <div class="hero-body">
-    <div class="container is-max-desktop">
-      <div class="columns is-centered has-text-centered">
-        <div class="column is-four-fifths">
-          <h2 class="title is-3">Conclusion and Discussion</h2>
-          <div class="content has-text-justified">
-            <p>
-              <b>Conclusion.</b> We presented Script-to-Acting, a unified framework for generating expressive,
-              contextually aligned acting directly from scripts. Acting Mind, Acting Morph, and Acting Creation
-              jointly enable continuous, content-variant control: changing emotion intensity can transform the
-              action motif rather than merely rescaling a fixed motion. The modular design integrates with
-              diverse motion-generation backbones and provides high-level, context-sensitive control over
-              emotional and dramatic attributes. We further introduced TheaterAct, a multimodal dataset with
-              rich annotations, establishing a foundation for script-conditioned acting generation.
-            </p>
-            <p>
-              <b>Discussion.</b> Our results suggest that emotion intensity in acting is better understood as a
-              selection over a family of acting modes than as a global style gain: the same line can move
-              across distinct motifs instead of only rescaling one motion. This points to a broader view of
-              script-conditioned generation, in which the script is not merely a caption to be matched but a
-              specification of dramatic intent that shapes which performance is produced. Our study further
-              indicates that a small, carefully annotated theatrical corpus can expose behaviours that
-              everyday-motion benchmarks leave invisible, which motivates domain-specific data as a driver of
-              expressive generation.
-            </p>
-          </div>
+      <div class="axis-card">
+        <video controls preload="metadata">
+          <source src="assets/Video/Joy.mp4" type="video/mp4">
+        </video>
+        <div class="axis-body">
+          <span class="axis-chip axis-joy">Joy</span>
+          <p class="axis-quote">&ldquo;Horatio, a fellow of infinite jest, of most excellent fancy.&rdquo;</p>
+          <p class="axis-desc">Hamlet raises an arm, poses to orate, cheers aloud, and runs in circles across the stage in joy.</p>
+        </div>
+      </div>
+      <div class="axis-card">
+        <video controls preload="metadata">
+          <source src="assets/Video/Neutral.mp4" type="video/mp4">
+        </video>
+        <div class="axis-body">
+          <span class="axis-chip axis-neutral">Neutral</span>
+          <p class="axis-quote">&ldquo;To be, or not to be: that is the question.&rdquo;</p>
+          <p class="axis-desc">Hamlet kneels open-armed, scans viewers, speaks boldly, and runs stretched with tilted head in neutrality.</p>
         </div>
       </div>
     </div>
-  </div>
-</section>
-<!-- End conclusion -->
+  </section>
 
+  <section>
+    <h2>BibTeX</h2>
+<pre>@inproceedings{scripttoacting2027,
+  title     = {Bring Scripts to Acting! Content-Variant Control for Emotion-Aligned Acting Generation},
+  author    = {Li, Mengtian and Xiong, Sifan and Qin, Botao and Pan, Yichen and Jin, Li and Li, Yanran},
+  booktitle = {International Conference on Learning Representations},
+  year      = {2027}
+}</pre>
+  </section>
+</main>
 
-<!-- BibTeX citation -->
-<section class="section" id="BibTeX">
-  <div class="container is-max-desktop content">
-    <div class="has-text-centered">
-      <h2 class="title is-3">BibTeX</h2>
-    </div>
-    <pre><code>
-      @inproceedings{scripttoacting2027,
-        title={Bring Scripts to Acting! Content-Variant Control for Emotion-Aligned Acting Generation},
-        author={Li, Mengtian and Xiong, Sifan and Qin, Botao and Pan, Yichen and Jin, Li and Li, Yanran},
-        booktitle={International Conference on Learning Representations},
-        year={2027}
-      }</code></pre>
-  </div>
-</section>
-<!-- End BibTeX citation -->
-
-
-<footer class="footer">
-  <div class="container">
-    <div class="content has-text-centered">
-      <a class="icon-link" href="paper.pdf" target="_blank">
-        <i class="fas fa-file-pdf"></i>
-      </a>
-      <a class="icon-link" href="https://github.com/xiongsifan02-xsf/bring-scripts-to-acting" target="_blank">
-        <i class="fab fa-github"></i>
-      </a>
-    </div>
-  </div>
+<footer>
+  <div class="wrap center">Bring Scripts to Acting! · ICLR 2027</div>
 </footer>
 
-<script src="assets/static/js/index.js"></script>
 </body>
 </html>
